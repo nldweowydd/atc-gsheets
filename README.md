@@ -1,4 +1,4 @@
-###Tong-man's MiSensor to Google Sheets project
+### Tong-man's MiSensor to Google Sheets project
 The MiSensor to Google Sheets project enables real-time data logging from MiSensor devices using the ESP32 microcontrollers. By leveraging the power of cloud technology and automation, this project allows users to easily monitor and analyze sensor data directly in Google Sheets.
 
 ### **Components Used**
@@ -45,12 +45,12 @@ Setup the ESP32-2 to display data on 0.96" OLED diaply and use Google Sheets API
 Set up Google Sheets API to allow the ESP32 to send data to a specified spreadsheet.
 
 ### Schematic
-SSD1306       ESP32
---------------------
-SDA  ------>  9
-SCL  ------>  8
-VCC  ------>  7
-GND  ------>  6
+** SSD1306       ESP32 **
+** -------------------- **
+** SDA  ------>  9 **
+** SCL  ------>  8 **
+** VCC  ------>  7 **
+** GND  ------>  6 **
 
 ** Arduino IDE codes for ESP32-2: **
 [https://github.com/TCM14/atc-gsheets/blob/main/ESP32-2.ino](https://github.com/TCM14/atc-gsheets/blob/main/ESP32-2.ino)
