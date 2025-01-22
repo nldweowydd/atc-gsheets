@@ -46,7 +46,7 @@ Set up Google Sheets API to allow the ESP32 to send data to a specified spreadsh
 
 ### Schematic
 SSD1306   ESP32
-SDA  ———— GPIO9
+SDA  ———— GPIO9\n
 SCL  ———— GPIO8
 VCC  ———— GPIO7 
 GND  ———— GPIO6 
