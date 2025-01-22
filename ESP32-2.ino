@@ -1,6 +1,6 @@
 //ESP32C3 Super Mini Dev Module, USB CDC on Boot "Enabled", Integrated USB JTAG, Enabled, Default 4MB(1.2MB APP/1.5MB SPIFFS), 160MHz(WiFi), DIO, 80MHz, 4MB(32Mb), 921600, None, Disabled on COM5
 //ESP32-2
-//
+//https://github.com/TCM14/atc-gsheets/ESP32-2.ino
 
 #include <Arduino.h>
 #include <WiFi.h>
