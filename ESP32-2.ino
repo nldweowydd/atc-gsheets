@@ -9,6 +9,7 @@
 #include <ESP_Google_Sheet_Client.h>
 #include <PubSubClient.h>
 
+//Define pins connected to ssd1306 display
 #define I2C_SDA 9
 #define I2C_SCL 8
 #define VCC_PIN 7
