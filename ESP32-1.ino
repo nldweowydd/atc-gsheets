@@ -160,7 +160,33 @@ if (mqttClient.connected() and (p.toFloat() != pp.toFloat())) {
   mqttClient.publish(SUB_P, (char*)p.c_str(), true); 
   pp = p;
 }
-if (mqttClient.connected() and (s.toFloat() != sp.toFloat())) { mqttClient.publish(SUB_S, (char*)s.c_str(), true); sp = s; } if (mqttClient.connected() and ((h2.toFloat() >= hp2.toFloat() * 1.01) or (h2.toFloat() <= hp2.toFloat() * 0.99))) { mqttClient.publish(SUB_RH2, (char*)h2.c_str(), true); hp2 = h2; } if (mqttClient.connected() and ((t2.toFloat() >= tp2.toFloat() + 0.01)) or (t2.toFloat() <= tp2.toFloat() - 0.01)) { mqttClient.publish(SUB_TEMP2, (char*)t2.c_str(), true); tp2 = t2; } if (mqttClient.connected() and ((v2.toFloat() >= vp2.toFloat() + 0.01)) or (v2.toFloat() <= vp2.toFloat() - 0.01)) { mqttClient.publish(SUB_V2, (char*)v2.c_str(), true); vp2 = v2; } if (mqttClient.connected() and (p2.toFloat() != pp2.toFloat())) { mqttClient.publish(SUB_P2, (char*)p2.c_str(), true); pp2 = p2; } if (mqttClient.connected() and (s2.toFloat() != sp2.toFloat())) { mqttClient.publish(SUB_S2, (char*)s2.c_str(), true); sp2 = s2; } delay(100); //delay some time for MQTT to publish and callback } }
+if (mqttClient.connected() and (s.toFloat() != sp.toFloat())) { 
+  mqttClient.publish(SUB_S, (char*)s.c_str(), true);
+  sp = s;
+}
+if (mqttClient.connected() and ((h2.toFloat() >= hp2.toFloat() * 1.01) or (h2.toFloat() <= hp2.toFloat() * 0.99))) {
+  mqttClient.publish(SUB_RH2, (char*)h2.c_str(), true);
+  hp2 = h2;
+}
+if (mqttClient.connected() and ((t2.toFloat() >= tp2.toFloat() + 0.01)) or (t2.toFloat() <= tp2.toFloat() - 0.01)) { 
+  mqttClient.publish(SUB_TEMP2, (char*)t2.c_str(), true);
+  tp2 = t2;
+}
+if (mqttClient.connected() and ((v2.toFloat() >= vp2.toFloat() + 0.01)) or (v2.toFloat() <= vp2.toFloat() - 0.01)) {
+  mqttClient.publish(SUB_V2, (char*)v2.c_str(), true);
+  vp2 = v2;
+} 
+if (mqttClient.connected() and (p2.toFloat() != pp2.toFloat())) {
+  mqttClient.publish(SUB_P2, (char*)p2.c_str(), true); 
+  pp2 = p2; 
+} 
+if (mqttClient.connected() and (s2.toFloat() != sp2.toFloat())) { 
+  mqttClient.publish(SUB_S2, (char*)s2.c_str(), true);
+  sp2 = s2; 
+}
+delay(100); //delay some time for MQTT to publish and callback 
+} 
+}
 
 void initWifiStation() { WiFi.mode(WIFI_AP_STA); WiFi.hostname(MYHOSTNAME); WiFi.begin(ssid, password); Serial.print("\nConnecting to WiFi "); while (WiFi.status() != WL_CONNECTED) { delay(1000); Serial.print("."); retries++; if ((retries >= 10) and (retries < 20)) { if (retries == 10) { WiFi.mode(WIFI_OFF); WiFi.mode(WIFI_AP_STA); delay(500); WiFi.begin(ssid1, password1); Serial.println(String("\nTrying to Connect WiFi network (") + String(ssid1) + ")"); } } if ((retries >= 20) and (retries < 30)) { if (retries == 20) { WiFi.mode(WIFI_OFF); WiFi.mode(WIFI_AP_STA); delay(500); WiFi.begin(ssid2, password2); Serial.println(String("\nTrying to Connect WiFi network (") + String(ssid2) + ")"); } } if (retries >= 30) { ESP.restart(); } } Serial.println(String("\nConnected to the WiFi network (") + WiFi.SSID() + ")[" + WiFi.RSSI() + "]"); }
 
