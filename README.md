@@ -1,10 +1,3 @@
-- 👋 Hi, I’m @TCM14
-- 👀 I’m interested in ArduinoCode, Modbus/TCP, LoRa, SCADA...
-- 🌱 I’m currently learning ArduinoCode with LoRa, SCADA...
-- 💞️ I’m looking to collaborate on ArduinoCode subcontractors in HK...
-- 📫 How to reach me ... leave private comments on GitHub.
+### Tong-man's MiSensor to Google Sheets project
 
-<!---
-TCM14/TCM14 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+The MiSensor to Google Sheets project enables real-time data logging from MiSensor devices using the ESP32 microcontrollers. By leveraging the power of cloud technology and automation, this project allows users to easily monitor and analyze sensor data directly in Google Sheets.
