@@ -41,15 +41,7 @@ Setup the ESP32-1 to collect the MiSensor BLE beacons from ESP32-1(ESP32 Supermi
 [https://github.com/TCM14/atc-gsheets/blob/main/ESP32-1.ino](https://github.com/TCM14/atc-gsheets/blob/main/ESP32-1.ino)
 
 ### Step 4
-Setup the ESP32-2 to display data on 0.96" OLED diaply and use Google Sheets API:
-Set up Google Sheets API to allow the ESP32 to send data to a specified spreadsheet.
-
-### Schematic
-SSD1306   ESP32
-SDA  ———— GPIO9\n
-SCL  ———— GPIO8
-VCC  ———— GPIO7 
-GND  ———— GPIO6 
+Setup the ESP32-2 to display data on 0.96" OLED display and use Google Sheets API.
 
 ** Arduino IDE codes for ESP32-2: **
 [https://github.com/TCM14/atc-gsheets/blob/main/ESP32-2.ino](https://github.com/TCM14/atc-gsheets/blob/main/ESP32-2.ino)
