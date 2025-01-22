@@ -1,4 +1,19 @@
-//ESP32C3 Super Mini Dev Module, USB CDC on Boot "Enabled", Integrated USB JTAG, Enabled, Default 4MB(1.2MB APP/1.5MB SPIFFS), 160MHz(WiFi), DIO, 80MHz, 4MB(32Mb), 921600, None, Disabled on COM4 //ESP32-1 // #include <WiFi.h> #include <PubSubClient.h> #include "ATC_MiThermometer.h" const String MYHOSTNAME = "ESP32-1TEMP"; const char* ssid = "your_wifi_ssid1"; const char* password = "your_wifi_password1"; const char* ssid1 = "your_wifi_ssid2"; const char* password1 = "your_wifi_password2"; const char* ssid2 = "your_wifi_ssid3"; const char* password2 = "your_wifi_password3"; const int scanTime = 5; // BLE scan time in seconds const char* mqttServer = "test.mosquitto.org"; const char* mqttClientName = "ESP32-1TEMP"; const int mqttPort = 1883; const char* mqttUser = ""; const char* mqttPassword = "";
+//ESP32C3 Super Mini Dev Module, USB CDC on Boot "Enabled", Integrated USB JTAG, Enabled, Default 4MB(1.2MB APP/1.5MB SPIFFS), 160MHz(WiFi), DIO, 80MHz, 4MB(32Mb), 921600, None, Disabled on COM4
+//ESP32-1 
+//
+#include <WiFi.h> 
+#include <PubSubClient.h> 
+#include "ATC_MiThermometer.h" 
+const String MYHOSTNAME = "ESP32-1TEMP"; 
+const char* ssid = "your_wifi_ssid1"; 
+const char* password = "your_wifi_password1"; 
+const char* ssid1 = "your_wifi_ssid2"; 
+const char* password1 = "your_wifi_password2"; 
+const char* ssid2 = "your_wifi_ssid3"; 
+const char* password2 = "your_wifi_password3"; 
+const int scanTime = 5; // BLE scan time in seconds 
+const char* mqttServer = "test.mosquitto.org"; 
+const char* mqttClientName = "ESP32-1TEMP"; const int mqttPort = 1883; const char* mqttUser = ""; const char* mqttPassword = "";
 
 int retries = 0; int loopCount = 0; unsigned long PrevMillis = 0; String t = "25.5"; String tp = "25.5"; String h = "65.0"; String hp = "65.0"; String p = "80"; String pp = "80"; String v = "3.00"; String vp = "3.00"; String s = "-99.9"; String sp = "-99.9"; String t2 = "25.5"; String tp2 = "25.5"; String h2 = "65.0"; String hp2 = "65.0"; String p2 = "80"; String pp2 = "80"; String v2 = "3.00"; String vp2 = "3.00"; String s2 = "-99.9"; String sp2 = "-99.9"; #define SUB_TEMP "your_mqtt_path/esp32-1/temp" #define SUB_RH "your_mqtt_path/esp32-1/rh" #define SUB_V "your_mqtt_path/esp32-1/volt" #define SUB_P "your_mqtt_path/esp32-1/p" #define SUB_S "your_mqtt_path/esp32-1/rssi" #define SUB_TEMP2 "your_mqtt_path/esp32-1/temp2" #define SUB_RH2 "your_mqtt_path/esp32-1/rh2" #define SUB_V2 "your_mqtt_path/esp32-1/volt2" #define SUB_P2 "your_mqtt_path/esp32-1/p2" #define SUB_S2 "your_mqtt_path/esp32-1/rssi2" #define SUB_RST "your_mqtt_path/esp32-1/restart" #define SUB_SYNC "your_mqtt_path/esp32-1/sync" WiFiClient wifiClient; PubSubClient mqttClient(wifiClient); float Temperature = 0.0; float Humidity = 0.0; float Voltage = 0.0; float Percent = 0.0; float BLErssi = 0.0; // List of Mi sensors' BLE addresses std::vectorstd::string knownBLEAddresses = { "a4:c1:38:xx:xx:xx", "a4:c1:38:xx:xx:xx" }; ATC_MiThermometer miThermometer(knownBLEAddresses);
 
