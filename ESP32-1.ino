@@ -205,8 +205,57 @@ void initWifiStation() {
         Serial.println(String("\nTrying to Connect WiFi network (") + String(ssid1) + ")");
       } 
     } 
-    if ((retries >= 20) and (retries < 30)) { if (retries == 20) { WiFi.mode(WIFI_OFF); WiFi.mode(WIFI_AP_STA); delay(500); WiFi.begin(ssid2, password2); Serial.println(String("\nTrying to Connect WiFi network (") + String(ssid2) + ")"); } } if (retries >= 30) { ESP.restart(); } } Serial.println(String("\nConnected to the WiFi network (") + WiFi.SSID() + ")[" + WiFi.RSSI() + "]"); }
+    if ((retries >= 20) and (retries < 30)) { 
+      if (retries == 20) { 
+        WiFi.mode(WIFI_OFF);
+        WiFi.mode(WIFI_AP_STA); 
+        delay(500); 
+        WiFi.begin(ssid2, password2);
+        Serial.println(String("\nTrying to Connect WiFi network (") + String(ssid2) + ")"); 
+      } 
+    }
+    if (retries >= 30) {
+      ESP.restart(); 
+    }
+  }
+  Serial.println(String("\nConnected to the WiFi network (") + WiFi.SSID() + ")[" + WiFi.RSSI() + "]"); 
+}
 
-void initMQTTClient() { // Connecting to MQTT server mqttClient.setServer(mqttServer, mqttPort); mqttClient.setCallback(PubSubCallback); while (!mqttClient.connected()) { Serial.println(String("Connecting to MQTT (") + mqttServer + ")..."); if (mqttClient.connect(mqttClientName, mqttUser, mqttPassword)) { Serial.println(String("MQTT client (") + mqttClientName + ") connected"); } else { Serial.print("\nFailed with state "); Serial.println(mqttClient.state()); if (WiFi.status() != WL_CONNECTED) { initWifiStation(); } delay(2000); retries++; if (retries >= 5) ESP.restart(); } } mqttClient.publish(SUB_RST, "0", true); delay(50); mqttClient.loop(); delay(50); mqttClient.subscribe(SUB_TEMP); mqttClient.subscribe(SUB_RH); mqttClient.subscribe(SUB_V); mqttClient.subscribe(SUB_P); mqttClient.subscribe(SUB_S); mqttClient.subscribe(SUB_TEMP2); mqttClient.subscribe(SUB_RH2); mqttClient.subscribe(SUB_V2); mqttClient.subscribe(SUB_P2); mqttClient.subscribe(SUB_S2); mqttClient.subscribe(SUB_RST); mqttClient.subscribe(SUB_SYNC); delay(50); retries = 0; }
+void initMQTTClient() { // Connecting to MQTT server 
+  mqttClient.setServer(mqttServer, mqttPort); 
+  mqttClient.setCallback(PubSubCallback);
+  while (!mqttClient.connected()) { 
+    Serial.println(String("Connecting to MQTT (") + mqttServer + ")..."); 
+    if (mqttClient.connect(mqttClientName, mqttUser, mqttPassword)) { 
+      Serial.println(String("MQTT client (") + mqttClientName + ") connected"); 
+    } else { 
+      Serial.print("\nFailed with state ");
+      Serial.println(mqttClient.state());
+      if (WiFi.status() != WL_CONNECTED) { 
+        initWifiStation();
+      } 
+      delay(2000);
+      retries++;
+      if (retries >= 5) ESP.restart();
+    }
+  } mqttClient.publish(SUB_RST, "0", true); 
+  delay(50); 
+  mqttClient.loop(); 
+  delay(50);
+  mqttClient.subscribe(SUB_TEMP);
+  mqttClient.subscribe(SUB_RH);
+  mqttClient.subscribe(SUB_V);
+  mqttClient.subscribe(SUB_P); 
+  mqttClient.subscribe(SUB_S);
+  mqttClient.subscribe(SUB_TEMP2);
+  mqttClient.subscribe(SUB_RH2); 
+  mqttClient.subscribe(SUB_V2);
+  mqttClient.subscribe(SUB_P2); 
+  mqttClient.subscribe(SUB_S2); 
+  mqttClient.subscribe(SUB_RST);
+  mqttClient.subscribe(SUB_SYNC); 
+  delay(50); 
+  retries = 0;
+}
 
 void PubSubCallback(char* topic, byte* payload, unsigned int length) { String strTopicTemp = SUB_TEMP; String strTopicRH = SUB_RH; String strTopicV = SUB_V; String strTopicP = SUB_P; String strTopicS = SUB_S; String strTopicTemp2 = SUB_TEMP2; String strTopicRH2 = SUB_RH2; String strTopicV2 = SUB_V2; String strTopicP2 = SUB_P2; String strTopicS2 = SUB_S2; String strTopicRST = SUB_RST; String strTopicSYNC = SUB_SYNC; String strPayload = ""; //Serial.print("RX - Topic : "); //Serial.print(topic); //Serial.print(", Message : "); for (int i = 0; i < length; i++) { //Serial.print((char)payload[i]); strPayload += (char)payload[i]; } //Serial..print(" ---> "); if (strTopicSYNC == topic) { if (strPayload == "1") { PrevMillis = millis() + 10000; Serial.print("RX - SYNC, PrevMillis = "); Serial.print(PrevMillis); Serial.println("."); mqttClient.publish(SUB_SYNC, "0", true); delay(100); mqttClient.loop(); delay(100); } } if (strTopicTemp == topic) { t = strPayload; //Serial..println("Temperature = " + strPayload); } else if (strTopicRH == topic) { h = strPayload; //Serial..println("Humidity = " + strPayload); } else if (strTopicV == topic) { v = strPayload; //Serial..println("Voltage = " + strPayload); } else if (strTopicP == topic) { p = strPayload; //Serial..println("Percent = " + strPayload); } else if (strTopicS == topic) { s = strPayload; //Serial..println("RSSI = " + strPayload); } else if (strTopicTemp2 == topic) { t2 = strPayload; //Serial..println("Temperature2 = " + strPayload); } else if (strTopicRH2 == topic) { h2 = strPayload; //Serial..println("Humidity2 = " + strPayload); } else if (strTopicV2 == topic) { v2 = strPayload; //Serial..println("Voltage2 = " + strPayload); } else if (strTopicP2 == topic) { p2 = strPayload; //Serial..println("Percent2 = " + strPayload); } else if (strTopicS2 == topic) { s2 = strPayload; //Serial..println("RSSI2 = " + strPayload); } else if (strTopicRST == topic) { delay(100); //Serial..println("Restart = " + strPayload); if (strPayload == "1") { Serial.println("Remote restart..."); ESP.restart(); } } } 
