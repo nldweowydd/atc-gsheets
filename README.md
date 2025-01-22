@@ -47,10 +47,10 @@ Set up Google Sheets API to allow the ESP32 to send data to a specified spreadsh
 ### Schematic
 ** SSD1306       ESP32 **
 ** -------------------- **
-** SDA  ------>  9 **
-** SCL  ------>  8 **
-** VCC  ------>  7 **
-** GND  ------>  6 **
+** SDA  ------ GPIO9 **
+** SCL  ------ GPIO8 **
+** VCC  ------ GPIO7 **
+** GND  ------ GPIO6 **
 
 ** Arduino IDE codes for ESP32-2: **
 [https://github.com/TCM14/atc-gsheets/blob/main/ESP32-2.ino](https://github.com/TCM14/atc-gsheets/blob/main/ESP32-2.ino)
