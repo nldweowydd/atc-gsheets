@@ -45,4 +45,6 @@ Setup the ESP32-2 to display data on 0.96" OLED diaply and use Google Sheets API
 Set up Google Sheets API to allow the ESP32 to send data to a specified spreadsheet.
 **Arduino IDE codes for ESP32-2:**
 [https://github.com/TCM14/atc-gsheets/blob/main/ESP32-2.ino](https://github.com/TCM14/atc-gsheets/blob/main/ESP32-2.ino)
-Testing: Verify the data logging process and ensure that the data appears correctly in the spreadsheet.
+
+###Testing: 
+Verify the data logging process and ensure that the data appears correctly in the spreadsheet.
