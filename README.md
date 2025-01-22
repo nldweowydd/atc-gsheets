@@ -38,11 +38,11 @@ Follow the link to setup your Google Sheet account and private keys ready for Go
 ### Step 3
 Setup the ESP32-1 to collect the MiSensor BLE beacons from ESP32-1(ESP32 Supermini) and configure it to gather required data.
 **Arduino IDE codes for ESP32-1:**
-[ESP32-1.ino](https://github.com/TCM14/atc-gsheets/blob/main/ESP32-1.ino)
+[https://github.com/TCM14/atc-gsheets/blob/main/ESP32-1.ino](https://github.com/TCM14/atc-gsheets/blob/main/ESP32-1.ino)
 
 ### Step 4
 Setup the ESP32-2 to display data on 0.96" OLED diaply and use Google Sheets API:
 Set up Google Sheets API to allow the ESP32 to send data to a specified spreadsheet.
 **Arduino IDE codes for ESP32-2:**
-
+[https://github.com/TCM14/atc-gsheets/blob/main/ESP32-2.ino](https://github.com/TCM14/atc-gsheets/blob/main/ESP32-2.ino)
 Testing: Verify the data logging process and ensure that the data appears correctly in the spreadsheet.
