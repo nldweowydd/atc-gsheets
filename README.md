@@ -38,6 +38,7 @@ Follow the link to setup your Google Sheet account and private keys ready for Go
 ### Step 3
 Setup the ESP32-1 to collect the MiSensor BLE beacons from ESP32-1(ESP32 Supermini) and configure it to gather required data.
 **Arduino IDE codes for ESP32-1:**
+ESP32-1.ino
 `//ESP32C3 Super Mini Dev Module, USB CDC on Boot "Enabled", Integrated USB JTAG, Enabled, Default 4MB(1.2MB APP/1.5MB SPIFFS), 160MHz(WiFi), DIO, 80MHz, 4MB(32Mb), 921600, None, Disabled on COM4
 //ESP32-1
 // 
