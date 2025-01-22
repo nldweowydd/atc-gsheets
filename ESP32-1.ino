@@ -121,7 +121,7 @@ if (loopCount >= 200 & (millis() - PrevMillis) >= 30000) {
         } else {
           s = s.substring(0, 4);
         }
-      } else { 
+        } else { 
         t2 = String(Temperature);
         t2 = t2.substring(0, 5); 
         h2 = String(Humidity); 
@@ -140,55 +140,72 @@ if (loopCount >= 200 & (millis() - PrevMillis) >= 30000) {
       delay(50); 
     } 
   } 
-miThermometer.clearScanResults(); 
-if (mqttClient.connected()) 
-  retries = 0;
-// Below lines compare the current BLE value h with previous value hp, h: humidity, t: temperature, etc... 
-if (mqttClient.connected() and ((h.toFloat() >= hp.toFloat() * 1.01) or (h.toFloat() <= hp.toFloat() * 0.99))) { 
-  mqttClient.publish(SUB_RH, (char*)h.c_str(), true); 
-  hp = h;
-}
-if (mqttClient.connected() and ((t.toFloat() >= tp.toFloat() + 0.01)) or (t.toFloat() <= tp.toFloat() - 0.01)) { 
-  mqttClient.publish(SUB_TEMP, (char*)t.c_str(), true); 
-  tp = t; 
-} 
-if (mqttClient.connected() and ((v.toFloat() >= vp.toFloat() + 0.01)) or (v.toFloat() <= vp.toFloat() - 0.01)) { 
-  mqttClient.publish(SUB_V, (char*)v.c_str(), true);
-  vp = v;
-} 
-if (mqttClient.connected() and (p.toFloat() != pp.toFloat())) { 
-  mqttClient.publish(SUB_P, (char*)p.c_str(), true); 
-  pp = p;
-}
-if (mqttClient.connected() and (s.toFloat() != sp.toFloat())) { 
-  mqttClient.publish(SUB_S, (char*)s.c_str(), true);
-  sp = s;
-}
-if (mqttClient.connected() and ((h2.toFloat() >= hp2.toFloat() * 1.01) or (h2.toFloat() <= hp2.toFloat() * 0.99))) {
-  mqttClient.publish(SUB_RH2, (char*)h2.c_str(), true);
-  hp2 = h2;
-}
-if (mqttClient.connected() and ((t2.toFloat() >= tp2.toFloat() + 0.01)) or (t2.toFloat() <= tp2.toFloat() - 0.01)) { 
-  mqttClient.publish(SUB_TEMP2, (char*)t2.c_str(), true);
-  tp2 = t2;
-}
-if (mqttClient.connected() and ((v2.toFloat() >= vp2.toFloat() + 0.01)) or (v2.toFloat() <= vp2.toFloat() - 0.01)) {
-  mqttClient.publish(SUB_V2, (char*)v2.c_str(), true);
-  vp2 = v2;
-} 
-if (mqttClient.connected() and (p2.toFloat() != pp2.toFloat())) {
-  mqttClient.publish(SUB_P2, (char*)p2.c_str(), true); 
-  pp2 = p2; 
-} 
-if (mqttClient.connected() and (s2.toFloat() != sp2.toFloat())) { 
-  mqttClient.publish(SUB_S2, (char*)s2.c_str(), true);
-  sp2 = s2; 
-}
-delay(100); //delay some time for MQTT to publish and callback 
-} 
+  miThermometer.clearScanResults(); 
+  if (mqttClient.connected()) retries = 0;
+  // Below lines compare the current BLE value h with previous value hp, h: humidity, t: temperature, etc... 
+  if (mqttClient.connected() and ((h.toFloat() >= hp.toFloat() * 1.01) or (h.toFloat() <= hp.toFloat() * 0.99))) { 
+    mqttClient.publish(SUB_RH, (char*)h.c_str(), true); 
+    hp = h;
+  }
+  if (mqttClient.connected() and ((t.toFloat() >= tp.toFloat() + 0.01)) or (t.toFloat() <= tp.toFloat() - 0.01)) { 
+    mqttClient.publish(SUB_TEMP, (char*)t.c_str(), true); 
+    tp = t; 
+  } 
+  if (mqttClient.connected() and ((v.toFloat() >= vp.toFloat() + 0.01)) or (v.toFloat() <= vp.toFloat() - 0.01)) { 
+    mqttClient.publish(SUB_V, (char*)v.c_str(), true);
+    vp = v;
+  } 
+  if (mqttClient.connected() and (p.toFloat() != pp.toFloat())) { 
+    mqttClient.publish(SUB_P, (char*)p.c_str(), true); 
+    pp = p;
+  }
+  if (mqttClient.connected() and (s.toFloat() != sp.toFloat())) { 
+    mqttClient.publish(SUB_S, (char*)s.c_str(), true);
+    sp = s;
+  }
+  if (mqttClient.connected() and ((h2.toFloat() >= hp2.toFloat() * 1.01) or (h2.toFloat() <= hp2.toFloat() * 0.99))) {
+    mqttClient.publish(SUB_RH2, (char*)h2.c_str(), true);
+    hp2 = h2;
+  }
+  if (mqttClient.connected() and ((t2.toFloat() >= tp2.toFloat() + 0.01)) or (t2.toFloat() <= tp2.toFloat() - 0.01)) { 
+    mqttClient.publish(SUB_TEMP2, (char*)t2.c_str(), true);
+    tp2 = t2;
+  }
+  if (mqttClient.connected() and ((v2.toFloat() >= vp2.toFloat() + 0.01)) or (v2.toFloat() <= vp2.toFloat() - 0.01)) {
+    mqttClient.publish(SUB_V2, (char*)v2.c_str(), true);
+    vp2 = v2;
+  } 
+  if (mqttClient.connected() and (p2.toFloat() != pp2.toFloat())) {
+    mqttClient.publish(SUB_P2, (char*)p2.c_str(), true); 
+    pp2 = p2; 
+  } 
+  if (mqttClient.connected() and (s2.toFloat() != sp2.toFloat())) { 
+    mqttClient.publish(SUB_S2, (char*)s2.c_str(), true);
+    sp2 = s2; 
+  }
+  delay(100); //delay some time for MQTT to publish and callback 
+ } 
 }
 
-void initWifiStation() { WiFi.mode(WIFI_AP_STA); WiFi.hostname(MYHOSTNAME); WiFi.begin(ssid, password); Serial.print("\nConnecting to WiFi "); while (WiFi.status() != WL_CONNECTED) { delay(1000); Serial.print("."); retries++; if ((retries >= 10) and (retries < 20)) { if (retries == 10) { WiFi.mode(WIFI_OFF); WiFi.mode(WIFI_AP_STA); delay(500); WiFi.begin(ssid1, password1); Serial.println(String("\nTrying to Connect WiFi network (") + String(ssid1) + ")"); } } if ((retries >= 20) and (retries < 30)) { if (retries == 20) { WiFi.mode(WIFI_OFF); WiFi.mode(WIFI_AP_STA); delay(500); WiFi.begin(ssid2, password2); Serial.println(String("\nTrying to Connect WiFi network (") + String(ssid2) + ")"); } } if (retries >= 30) { ESP.restart(); } } Serial.println(String("\nConnected to the WiFi network (") + WiFi.SSID() + ")[" + WiFi.RSSI() + "]"); }
+void initWifiStation() {
+  WiFi.mode(WIFI_AP_STA);
+  WiFi.hostname(MYHOSTNAME);
+  WiFi.begin(ssid, password);
+  Serial.print("\nConnecting to WiFi ");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000); 
+    Serial.print("."); 
+    retries++;
+    if ((retries >= 10) and (retries < 20)) { 
+      if (retries == 10) { 
+        WiFi.mode(WIFI_OFF);
+        WiFi.mode(WIFI_AP_STA); 
+        delay(500); 
+        WiFi.begin(ssid1, password1);
+        Serial.println(String("\nTrying to Connect WiFi network (") + String(ssid1) + ")");
+      } 
+    } 
+    if ((retries >= 20) and (retries < 30)) { if (retries == 20) { WiFi.mode(WIFI_OFF); WiFi.mode(WIFI_AP_STA); delay(500); WiFi.begin(ssid2, password2); Serial.println(String("\nTrying to Connect WiFi network (") + String(ssid2) + ")"); } } if (retries >= 30) { ESP.restart(); } } Serial.println(String("\nConnected to the WiFi network (") + WiFi.SSID() + ")[" + WiFi.RSSI() + "]"); }
 
 void initMQTTClient() { // Connecting to MQTT server mqttClient.setServer(mqttServer, mqttPort); mqttClient.setCallback(PubSubCallback); while (!mqttClient.connected()) { Serial.println(String("Connecting to MQTT (") + mqttServer + ")..."); if (mqttClient.connect(mqttClientName, mqttUser, mqttPassword)) { Serial.println(String("MQTT client (") + mqttClientName + ") connected"); } else { Serial.print("\nFailed with state "); Serial.println(mqttClient.state()); if (WiFi.status() != WL_CONNECTED) { initWifiStation(); } delay(2000); retries++; if (retries >= 5) ESP.restart(); } } mqttClient.publish(SUB_RST, "0", true); delay(50); mqttClient.loop(); delay(50); mqttClient.subscribe(SUB_TEMP); mqttClient.subscribe(SUB_RH); mqttClient.subscribe(SUB_V); mqttClient.subscribe(SUB_P); mqttClient.subscribe(SUB_S); mqttClient.subscribe(SUB_TEMP2); mqttClient.subscribe(SUB_RH2); mqttClient.subscribe(SUB_V2); mqttClient.subscribe(SUB_P2); mqttClient.subscribe(SUB_S2); mqttClient.subscribe(SUB_RST); mqttClient.subscribe(SUB_SYNC); delay(50); retries = 0; }
 
