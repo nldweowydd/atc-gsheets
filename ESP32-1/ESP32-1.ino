@@ -62,7 +62,7 @@ float Percent = 0.0;
 float BLErssi = 0.0;
 
 // List of Mi sensors' BLE addresses
-std::vectorstd::string knownBLEAddresses = { "a4:c1:38:xx:xx:xx", "a4:c1:38:xx:xx:xx" };
+std::vector<std::string> knownBLEAddresses = { "a4:c1:38:xx:xx:xx", "a4:c1:38:xx:xx:xx" };
 ATC_MiThermometer miThermometer(knownBLEAddresses);
 
 void setup() {
@@ -101,7 +101,7 @@ void loop() {
     miThermometer.resetData();
     unsigned found = miThermometer.getData(scanTime);
     for (int i = 0; i < miThermometer.data.size(); i++) {
-    if (miThermometer.data[i].valid {
+    if (miThermometer.data[i].valid) {
         delay(50);
         Serial.printf("i = %d, ", i);
         Serial.printf("Temp(°C):%.2f, ", miThermometer.data[i].temperature / 100.0);
