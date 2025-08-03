@@ -28,8 +28,7 @@ enum SensorLoc_e {
 enum SensorType_e {
   SENSOR_TEMP = 0,
   SENSOR_HUMIDITY,
-  SENSOR_BATTERY_VOLTAGE,
-  SENSOR_BATTERY_LEVEL,
+  SENSOR_VOLTAGE,
   SENSOR_RSSI,
   SENSOR_NUM
 };
@@ -37,7 +36,7 @@ typedef struct {
   String data[SENSOR_NUM];
 } SensorDataSet_t;
 SensorDataSet_t sensorData[SENSOR_LOC_NUM];
-String sensorLabel[] = { "temp", "rh", "bat_volt", "bat_pct", "rssi" };
+String sensorLabel[] = { "temp", "rh", "volt", "rssi" };
 static_assert(ARRAY_SIZE(sensorLabel) == SENSOR_NUM, "array size of sensorLabel does not match SENSOR_NUM");
 
 // Google Project ID
@@ -144,32 +143,33 @@ void loop() {
     for (int i = 0; i < miThermometer.data.size(); i++) {
       if (miThermometer.data[i].valid) {
         Serial.printf("i = %d: %10s, ", i, locationLabel[i].c_str());
+        // temperature
         Serial.printf("%s: %.2f, ", sensorLabel[SENSOR_TEMP].c_str(), miThermometer.data[i].temperature / 100.0);
         Temperature = miThermometer.data[i].temperature / 100.0;
+        sensorData[i].data[SENSOR_TEMP] = String(Temperature);
+        sensorData[i].data[SENSOR_TEMP] = sensorData[i].data[SENSOR_TEMP].substring(0, 5);
+        // humidity
         Serial.printf("%s: %.2f, ", sensorLabel[SENSOR_HUMIDITY].c_str(), miThermometer.data[i].humidity / 100.0);
         Humidity = miThermometer.data[i].humidity / 100.0;
-        Serial.printf("%s: %.3f, ", sensorLabel[SENSOR_BATTERY_VOLTAGE].c_str(), miThermometer.data[i].batt_voltage / 1000.0);
+        sensorData[i].data[SENSOR_HUMIDITY] = String(Humidity);
+        sensorData[i].data[SENSOR_HUMIDITY] = sensorData[i].data[SENSOR_HUMIDITY].substring(0, 5);
+        // voltage
+        Serial.printf("%s: %.3f, ", sensorLabel[SENSOR_VOLTAGE].c_str(), miThermometer.data[i].batt_voltage / 1000.0);
         Voltage = miThermometer.data[i].batt_voltage / 1000.0;
         char sbuff[8];
         dtostrf(Voltage, 4, 3, sbuff);
-        Serial.printf("%s: %3d, ", sensorLabel[SENSOR_BATTERY_LEVEL].c_str(), miThermometer.data[i].batt_level);
-        Percent = miThermometer.data[i].batt_level;
+        sensorData[i].data[SENSOR_VOLTAGE] = String(sbuff);
+        sensorData[i].data[SENSOR_VOLTAGE] = sensorData[i].data[SENSOR_VOLTAGE].substring(0, 5);
+        // rssi
         Serial.printf("%s: %d\n", sensorLabel[SENSOR_RSSI].c_str(), miThermometer.data[i].rssi);
         BLErssi = miThermometer.data[i].rssi;
-        sensorData[i].data[SENSOR_TEMP] = String(Temperature);
-        sensorData[i].data[SENSOR_TEMP] = sensorData[i].data[SENSOR_TEMP].substring(0, 5);
-        sensorData[i].data[SENSOR_HUMIDITY] = String(Humidity);
-        sensorData[i].data[SENSOR_HUMIDITY] = sensorData[i].data[SENSOR_HUMIDITY].substring(0, 5);
-        sensorData[i].data[SENSOR_BATTERY_VOLTAGE] = String(sbuff);
-        sensorData[i].data[SENSOR_BATTERY_VOLTAGE] = sensorData[i].data[SENSOR_BATTERY_VOLTAGE].substring(0, 5);
-        sensorData[i].data[SENSOR_BATTERY_LEVEL] = String(round(Percent));
-        sensorData[i].data[SENSOR_BATTERY_LEVEL] = sensorData[i].data[SENSOR_BATTERY_LEVEL].substring(0, 3);
         sensorData[i].data[SENSOR_RSSI] = String(BLErssi);
         if (BLErssi > -99) {
           sensorData[i].data[SENSOR_RSSI] = sensorData[i].data[SENSOR_RSSI].substring(0, 3);
         } else {
           sensorData[i].data[SENSOR_RSSI] = sensorData[i].data[SENSOR_RSSI].substring(0, 4);
         }
+        // set the data ready flag
         data_ready = true;
       }
     }
