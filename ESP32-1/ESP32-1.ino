@@ -1,6 +1,7 @@
 //ESP32C3 Super Mini Dev Module, USB CDC on Boot "Enabled", Integrated USB JTAG, Enabled, Default 4MB(1.2MB APP/1.5MB SPIFFS), 160MHz(WiFi), DIO, 80MHz, 4MB(32Mb), 921600, None, Disabled on COM4
 //ESP32-1
 //https://github.com/TCM14/atc-gsheets/ESP32-1.ino
+#include <esp_task_wdt.h>
 #include <WiFi.h>
 #include "time.h"
 #include <TimeLib.h>
@@ -11,6 +12,7 @@ const char* ssid = "your_wifi_ssid1";
 const char* password = "your_wifi_password1";
 const int scanTime = 5;  // BLE scan time in seconds
 #define NUM_OF_SENSORS 2
+#define WDT_TIMEOUT_SECONDS 10
 
 int retries = 0;
 int loopCount = 0;
@@ -93,11 +95,21 @@ void setup() {
   GSheet.begin(CLIENT_EMAIL, PROJECT_ID, PRIVATE_KEY);
   Serial.print("Connecting Google ");
 
+  // Initialise the watchdog
+  esp_task_wdt_deinit();  // De-initialize if already enabled
+  esp_task_wdt_config_t wdt_config = {
+    .timeout_ms = WDT_TIMEOUT_SECONDS * 1000,
+    .idle_core_mask = (1 << portNUM_PROCESSORS) - 1,  // Mask for all cores
+    .trigger_panic = true                             // Restart ESP32 on timeout
+  };
+  esp_task_wdt_init(&wdt_config);
+  esp_task_wdt_add(NULL);  // Add current task (loopTask) to watchdog
+
   delay(1000);  //delay 1000ms for internet connection and timesyc to be ready
 }
 
 void loop() {
-  delay(100);  //Leave some time for mqttClient.loop to process CallBack function
+  esp_task_wdt_reset();
   loopCount++;
   // Check sensor data every 30,000ms
   if (loopCount >= 200 & (millis() - PrevMillis) >= 30000) {
