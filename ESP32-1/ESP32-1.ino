@@ -11,7 +11,7 @@ const String MYHOSTNAME = "ESP32-1TEMP";
 const char* ssid = "your_wifi_ssid1";
 const char* password = "your_wifi_password1";
 const int scanTime = 5;  // BLE scan time in seconds
-#define WDT_TIMEOUT_SECONDS 10
+#define WDT_TIMEOUT_SECONDS 20
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
 
 int retries = 0;
@@ -19,6 +19,7 @@ int entries = 0;
 unsigned long prevSensorMillis = 0;
 unsigned long prevGSheetMillis = 0;
 unsigned long prevDbgPrintMillis = 0;
+unsigned long prevWdtKickMillis = 0;
 enum SensorLoc_e {
   SENSOR_LOC_LIVING = 0,
   SENSOR_LOC_BED,
@@ -130,13 +131,18 @@ void setup() {
   delay(1000);  //delay 1000ms for internet connection and timesyc to be ready
   prevSensorMillis = 0;
   prevDbgPrintMillis = 0;
+  prevWdtKickMillis = 0;
   prevGSheetMillis = millis();
 }
 
 void loop() {
-  esp_task_wdt_reset();
-  // Check sensor data every 30s
+  if (millis() - prevWdtKickMillis >= 5000) {
+    prevWdtKickMillis = millis();
+    // Kick the watchdog every 5 seconds
+    esp_task_wdt_reset();
+  }
   if (millis() - prevSensorMillis >= 30000) {
+    // Check sensor data every 30s
     prevSensorMillis = millis();
     miThermometer.resetData();
     unsigned found = miThermometer.getData(scanTime);
