@@ -17,11 +17,11 @@ int loopCount = 0;
 int entries = 0;
 unsigned long PrevMillis = 0;
 typedef struct {
-    String temp;
-    String humidity;
-    String bat_percentage;
-    String bat_volt;
-    String rssi;
+  String temp;
+  String humidity;
+  String bat_percentage;
+  String bat_volt;
+  String rssi;
 } SensorData_t;
 SensorData_t sensorData[NUM_OF_SENSORS];
 
@@ -78,7 +78,7 @@ void setup() {
   loopCount = 180;
   PrevMillis = millis();
 
-    //Configure time
+  //Configure time
   configTime(0, 0, ntpServer);
 
   GSheet.printf("ESP Google Sheet Client v%s\n\n", ESP_GOOGLE_SHEET_CLIENT_VERSION);
@@ -105,7 +105,7 @@ void loop() {
     miThermometer.resetData();
     unsigned found = miThermometer.getData(scanTime);
     for (int i = 0; i < miThermometer.data.size(); i++) {
-    if (miThermometer.data[i].valid) {
+      if (miThermometer.data[i].valid) {
         delay(50);
         Serial.printf("i = %d, ", i);
         Serial.printf("Temp(°C):%.2f, ", miThermometer.data[i].temperature / 100.0);
@@ -135,7 +135,7 @@ void loop() {
           sensorData[i].rssi = sensorData[i].rssi.substring(0, 4);
         }
         delay(50);
-    }
+      }
     }
     miThermometer.clearScanResults();
   }
@@ -144,22 +144,16 @@ void loop() {
   delay(10);
   bool ready = GSheet.ready();
   unsigned long locTime = getTime();
-  //Update the google sheet every 15 minutes(no data from MQTT) or update data from MQTT every 60 seconds
-  // if (ready && (locTime % 900 == 0 || RxSts && locTime % 60 == 0)) {
+  //Update the google sheet every 60 seconds
   if (ready && (locTime % 60 == 0)) {
     RxSts = false;
     FirebaseJson response;
     FirebaseJson valueRange;
-    // mqttClient.publish(SUB_SYNC, "1", true);
-    // Serial.println("TX - SYNC.");
-    // delay(100);
-    // mqttClient.loop();
-    // delay(100);
     offsetTime();  //subroutine to calculate local time from epoch time
     String StrA1 = "";
     bool GetSucess = GSheet.values.get(&response /* returned response */, spreadsheetId /* spreadsheet Id to read */, sheetTag /* range to read */);
-    Serial.print("GetSucess res:");
-    Serial.println(GetSucess);
+    // Serial.print("GetSucess res:");
+    // Serial.println(GetSucess);
     if (GetSucess) {
       response.toString(Serial, true);
       response.toString(StrA1, true);
