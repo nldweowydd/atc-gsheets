@@ -7,9 +7,15 @@
 #include <TimeLib.h>
 #include <ESP_Google_Sheet_Client.h>
 #include "ATC_MiThermometer.h"
-const String MYHOSTNAME = "ESP32-1TEMP";
-const char* ssid = "your_wifi_ssid1";
-const char* password = "your_wifi_password1";
+#include "config.h"
+const char* hostname = MY_HOSTNAME;
+const char* ssid = MY_SSID;
+const char* password = MY_PASSWORD;
+const char* projectId = MY_PROJECT_ID;
+const char* clientEmail = MY_CLIENT_EMAIL;
+const char* privateKey = MY_PRIVATE_KEY;
+const char* spreadsheetId = MY_SPREADSHEET_ID;
+const char* ntpServer = MY_NTP_SERVER;
 const int scanTime = 5;  // BLE scan time in seconds
 #define WDT_TIMEOUT_SECONDS 20
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
@@ -40,23 +46,8 @@ SensorDataSet_t sensorData[SENSOR_LOC_NUM];
 String sensorLabel[] = { "temp", "rh", "volt", "rssi" };
 static_assert(ARRAY_SIZE(sensorLabel) == SENSOR_NUM, "array size of sensorLabel does not match SENSOR_NUM");
 
-// Google Project ID
-#define PROJECT_ID "---"
-
-// Service Account's client email
-#define CLIENT_EMAIL "---"
-
-// Service Account's private key
-const char PRIVATE_KEY[] PROGMEM = "---";
-
-// The ID of the spreadsheet where you'll publish the data
-const char spreadsheetId[] = "---";
-
 // Token Callback function
 void tokenStatusCallback(TokenInfo info);
-
-// NTP server to request epoch time
-const char* ntpServer = "---";
 
 // Variable to save current epoch time
 char TimeStamp[20], sheetTag[10];
@@ -86,10 +77,6 @@ float Voltage = 0.0;
 float Percent = 0.0;
 float BLErssi = 0.0;
 
-// List of Mi sensors' BLE addresses
-#define SENSOR_MAC_LIVING "a4:c1:38:xx:xx:xx"
-#define SENSOR_MAC_STUDY "a4:c1:38:xx:xx:xx"
-#define SENSOR_MAC_BED "a4:c1:38:xx:xx:xx"
 String locationLabel[] = { "Living", "Bed", "Study"};
 static_assert(ARRAY_SIZE(locationLabel) == SENSOR_LOC_NUM, "array size of locationLabel does not match SENSOR_LOC_NUM");
 
@@ -115,7 +102,7 @@ void setup() {
   GSheet.setPrerefreshSeconds(10 * 60);
 
   // Begin the access token generation for Google API authentication
-  GSheet.begin(CLIENT_EMAIL, PROJECT_ID, PRIVATE_KEY);
+  GSheet.begin(clientEmail, projectId, privateKey);
   Serial.print("Connecting Google ");
 
   // Initialise the watchdog
@@ -273,7 +260,7 @@ void loop() {
 
 void initWifiStation() {
   WiFi.mode(WIFI_AP_STA);
-  WiFi.hostname(MYHOSTNAME);
+  WiFi.hostname(hostname);
   WiFi.begin(ssid, password);
   Serial.print("\nConnecting to WiFi ");
   while (WiFi.status() != WL_CONNECTED) {
