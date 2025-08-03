@@ -1,6 +1,3 @@
-//ESP32C3 Super Mini Dev Module, USB CDC on Boot "Enabled", Integrated USB JTAG, Enabled, Default 4MB(1.2MB APP/1.5MB SPIFFS), 160MHz(WiFi), DIO, 80MHz, 4MB(32Mb), 921600, None, Disabled on COM4
-//ESP32-1
-//https://github.com/TCM14/atc-gsheets/ESP32-1.ino
 #include <esp_task_wdt.h>
 #include <WiFi.h>
 #include "time.h"
@@ -18,10 +15,9 @@ const char* spreadsheetId = MY_SPREADSHEET_ID;
 const char* ntpServer = MY_NTP_SERVER;
 const int scanTime = 5;  // BLE scan time in seconds
 #define WDT_TIMEOUT_SECONDS 20
-#define ARRAY_SIZE(a) (sizeof(a)/sizeof(a[0]))
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
 int retries = 0;
-int entries = 0;
 unsigned long prevSensorMillis = 0;
 unsigned long prevGSheetMillis = 0;
 unsigned long prevDbgPrintMillis = 0;
@@ -46,38 +42,13 @@ SensorDataSet_t sensorData[SENSOR_LOC_NUM];
 String sensorLabel[] = { "temp", "rh", "volt", "rssi" };
 static_assert(ARRAY_SIZE(sensorLabel) == SENSOR_NUM, "array size of sensorLabel does not match SENSOR_NUM");
 
-// Token Callback function
-void tokenStatusCallback(TokenInfo info);
-
 // Variable to save current epoch time
 char TimeStamp[20], sheetTag[10];
 struct tm timeinfo;
-bool RxSts = false;
-
-// Function that gets current epoch time
-unsigned long getTime() {
-  time_t now;
-  if (!getLocalTime(&timeinfo)) {
-    Serial.println("Failed to obtain time");
-    ESP.restart();  //ESP force to restart, Google sheet cannot be operated without synchronized time or internet
-  }
-  time(&now);
-  return now;
-}
-
-// Function that gets the Firebase JSON label
-void getFireBaseJsonLabel(char *label, int max_len, int loc_idx, int sensor_idx) {
-  snprintf(label, max_len, "values/[%d]/[0]", SENSOR_NUM * loc_idx + sensor_idx + 1);
-}
 
 WiFiClient wifiClient;
-float Temperature = 0.0;
-float Humidity = 0.0;
-float Voltage = 0.0;
-float Percent = 0.0;
-float BLErssi = 0.0;
 
-String locationLabel[] = { "Living", "Bed", "Study"};
+String locationLabel[] = { "Living", "Bed", "Study" };
 static_assert(ARRAY_SIZE(locationLabel) == SENSOR_LOC_NUM, "array size of locationLabel does not match SENSOR_LOC_NUM");
 
 std::vector<std::string> knownBLEAddresses = { SENSOR_MAC_LIVING, SENSOR_MAC_BED, SENSOR_MAC_STUDY };
@@ -135,6 +106,10 @@ void loop() {
     unsigned found = miThermometer.getData(scanTime);
     for (int i = 0; i < miThermometer.data.size(); i++) {
       if (miThermometer.data[i].valid) {
+        float Temperature = 0.0;
+        float Humidity = 0.0;
+        float Voltage = 0.0;
+        float BLErssi = 0.0;
         Serial.printf("i = %d: %10s, ", i, locationLabel[i].c_str());
         // temperature
         Serial.printf("%s: %.2f, ", sensorLabel[SENSOR_TEMP].c_str(), miThermometer.data[i].temperature / 100.0);
@@ -178,7 +153,6 @@ void loop() {
     //Update the google sheet every 60 seconds
     if (data_ready && gsheet_ready && (locTime % 60 == 0)) {
       data_ready = false;
-      RxSts = false;
       FirebaseJson response;
       FirebaseJson valueRange;
       offsetTime();  //subroutine to calculate local time from epoch time
@@ -230,7 +204,6 @@ void loop() {
           valueRange.set(label, sensorData[loc_idx].data[sensor_idx]);
         }
       }
-      entries++;
       //Append row data to Google sheet (create new row)
       bool success = GSheet.values.append(&response /* returned response */, spreadsheetId /* spreadsheet Id to append */, sheetTag /* range to append */, &valueRange /* data range to append */);
       if (success) {
@@ -328,6 +301,7 @@ void offsetTime() {
   // Serial.println(sheetTag);
 }
 
+// Token Callback function
 void tokenStatusCallback(TokenInfo info) {
   if (info.status == token_status_error) {
     GSheet.printf("Token info: type = %s, status = %s\n", GSheet.getTokenType(info).c_str(), GSheet.getTokenStatus(info).c_str());
@@ -340,4 +314,20 @@ void tokenStatusCallback(TokenInfo info) {
     GSheet.printf("Token info: type = %s, status = %s\n", GSheet.getTokenType(info).c_str(), GSheet.getTokenStatus(info).c_str());
     retries = 0;
   }
+}
+
+// Function that gets current epoch time
+unsigned long getTime() {
+  time_t now;
+  if (!getLocalTime(&timeinfo)) {
+    Serial.println("Failed to obtain time");
+    ESP.restart();  //ESP force to restart, Google sheet cannot be operated without synchronized time or internet
+  }
+  time(&now);
+  return now;
+}
+
+// Function that gets the Firebase JSON label
+void getFireBaseJsonLabel(char* label, int max_len, int loc_idx, int sensor_idx) {
+  snprintf(label, max_len, "values/[%d]/[0]", SENSOR_NUM * loc_idx + sensor_idx + 1);
 }

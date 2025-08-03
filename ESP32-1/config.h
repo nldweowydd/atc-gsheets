@@ -1,7 +1,7 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-#define MY_HOSTNAME         "HOMEIOT"
+#define MY_HOSTNAME         "your_host_name"
 #define MY_SSID             "your_wifi_ssid1"
 #define MY_PASSWORD         "your_wifi_password1"
 #define MY_PROJECT_ID       "your_google_project_id"
