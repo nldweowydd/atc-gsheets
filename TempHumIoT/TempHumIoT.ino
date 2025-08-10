@@ -20,6 +20,7 @@ const int scanTime = 5;  // BLE scan time in seconds
 int retries = 0;
 unsigned long prevSensorMillis = 0;
 unsigned long prevGSheetMillis = 0;
+unsigned long prevGSheetSuccessMillis = 0;
 unsigned long prevDbgPrintMillis = 0;
 unsigned long prevWdtKickMillis = 0;
 enum SensorLoc_e {
@@ -91,13 +92,16 @@ void setup() {
   prevDbgPrintMillis = 0;
   prevWdtKickMillis = 0;
   prevGSheetMillis = millis();
+  prevGSheetSuccessMillis = millis();
 }
 
 void loop() {
-  if (millis() - prevWdtKickMillis >= 5000) {
-    prevWdtKickMillis = millis();
-    // Kick the watchdog every 5 seconds
-    esp_task_wdt_reset();
+  if (millis() - prevGSheetSuccessMillis <= 120000) {
+    // kick the watchdog every 5 seconds if the last Google sheet update was successful
+    if (millis() - prevWdtKickMillis >= 5000) {
+      prevWdtKickMillis = millis();
+      esp_task_wdt_reset();
+    }
   }
   if (millis() - prevSensorMillis >= 30000) {
     // Check sensor data every 30s
@@ -208,6 +212,7 @@ void loop() {
       bool success = GSheet.values.append(&response /* returned response */, spreadsheetId /* spreadsheet Id to append */, sheetTag /* range to append */, &valueRange /* data range to append */);
       if (success) {
         // response.toString(Serial, true);
+        prevGSheetSuccessMillis = millis();
       } else {
         Serial.println(GSheet.errorReason());
         retries++;
